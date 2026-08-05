@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeniusDataManager — Intelligent Data Profiling</title>
+  <meta name="description" content="Upload any PDF, CSV, or XLSX file and let GeniusDataManager automatically extract, profile, and visualize your data — no manual mapping required." />
+
+  <!-- Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ====================================================
+       HEADER
+       ==================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="/" class="logo" id="logo-link">
+        <div class="logo-icon">🧠</div>
+        <span class="logo-text">Genius<span>Data</span>Manager</span>
+      </a>
+      <span class="header-badge">Phase B — Intelligent Dashboard</span>
+    </div>
+  </header>
+
+  <!-- ====================================================
+       HERO
+       ==================================================== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">
+        <span>✨</span>
+        5-Stage Intelligent Data Pipeline
+      </div>
+      <h1>
+        <span class="text-gradient">Understand Any File,</span><br>
+        Automatically.
+      </h1>
+      <p>
+        Upload a PDF, CSV, or XLSX and get a complete data profile in seconds —
+        column types, hierarchy detection, time structure, anomalies, and
+        computed column validation. No manual mapping. No fixed templates.
+      </p>
+    </div>
+  </section>
+
+  <!-- ====================================================
+       UPLOAD SECTION
+       ==================================================== -->
+  <section id="upload-section">
+    <div class="container">
+
+      <!-- File input (hidden) -->
+      <input type="file" id="file-input" accept=".pdf,.csv,.xlsx,.xls" aria-label="Choose a file to upload" />
+
+      <!-- Upload zone -->
+      <div class="upload-zone" id="upload-zone" role="button" tabindex="0"
+           aria-label="Drag and drop a file here or click to browse"
+           onkeydown="if(event.key==='Enter'||event.key===' ') document.getElementById('file-input').click()">
+
+        <span class="upload-icon" aria-hidden="true">📊</span>
+        <h3>Drag &amp; drop your file here</h3>
+        <p>PDF, CSV, or Excel — any schema, any layout.</p>
+
+        <div class="upload-pills" aria-label="Supported file types">
+          <span class="pill pill-pdf">PDF</span>
+          <span class="pill pill-csv">CSV</span>
+          <span class="pill pill-xlsx">XLSX / XLS</span>
+        </div>
+
+        <button class="btn-upload" id="browse-btn" type="button"
+                aria-label="Open file browser">
+          <span aria-hidden="true">📁</span> Choose File
+        </button>
+
+        <!-- Progress bar (hidden until upload starts) -->
+        <div class="progress-container" id="upload-progress" aria-live="polite">
+          <div class="progress-label">
+            <span id="prog-label">Uploading…</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="prog-bar-fill" role="progressbar"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+
+      </div><!-- /.upload-zone -->
+
+      <!-- Status banner -->
+      <div class="status-banner" id="status-banner" role="alert" aria-live="assertive"></div>
+
+    </div><!-- /.container -->
+  </section>
+
+  <!-- ====================================================
+       PROFILE RESULTS SECTION
+       (populated by profile_viewer.js after successful upload)
+       ==================================================== -->
+  <section id="profile-section">
+    <div class="container">
+      <!-- Content injected by profile_viewer.js after successful upload -->
+    </div>
+  </section>
+
+  <!-- ====================================================
+       DASHBOARD SECTION
+       (populated by dashboard_builder.js after profile)
+       ==================================================== -->
+  <section id="dashboard-section" aria-label="Interactive Dashboard">
+    <div class="container">
+      <!-- Content injected by dashboard_builder.js -->
+    </div>
+  </section>
+
+  <!-- ====================================================
+       PIPELINE STAGES EXPLAINER (shown before any file uploaded)
+       ==================================================== -->
+  <section id="stages-section" style="padding: 0 24px 80px;">
+    <div class="container">
+      <h2 style="text-align:center; margin-bottom: 8px;">How the Pipeline Works</h2>
+      <p style="text-align:center; color:var(--text-secondary); margin-bottom:40px; font-size:0.9rem;">
+        Five inspectable stages — each produces its own intermediate output you can examine.
+      </p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+
+        <div class="kpi-card" style="text-align:left; padding:24px;">
+          <div style="font-size:1.8rem; margin-bottom:10px;">🔍</div>
+          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-1);">Stage 1</div>
+          <div style="font-weight:600; margin-bottom:6px;">Extraction</div>
+          <div style="font-size:0.82rem; color:var(--text-muted);">PDF (native + OCR fallback), CSV, XLSX — with page/line traceability per row.</div>
+        </div>
+
+        <div class="kpi-card" style="text-align:left; padding:24px;">
+          <div style="font-size:1.8rem; margin-bottom:10px;">🧬</div>
+          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-1);">Stage 2</div>
+          <div style="font-weight:600; margin-bottom:6px;">Data Profiling</div>
+          <div style="font-size:0.82rem; color:var(--text-muted);">Column types from values, hierarchy, time periods, anomalies, computed column validation.</div>
+        </div>
+
+        <div class="kpi-card" style="text-align:left; padding:24px;">
+          <div style="font-size:1.8rem; margin-bottom:10px;">🎨</div>
+          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-2);">Stage 3</div>
+          <div style="font-weight:600; margin-bottom:6px;">Layout Design</div>
+          <div style="font-size:0.82rem; color:var(--text-muted);">Rule-based chart &amp; table selection from the profile. No fixed templates.</div>
+        </div>
+
+        <div class="kpi-card" style="text-align:left; padding:24px;">
+          <div style="font-size:1.8rem; margin-bottom:10px;">📈</div>
+          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-2);">Stage 4</div>
+          <div style="font-weight:600; margin-bottom:6px;">Render Dashboard</div>
+          <div style="font-size:0.82rem; color:var(--text-muted);">Live-computed charts, drill-down tables, KPI cards — all from real extracted data.</div>
+        </div>
+
+        <div class="kpi-card" style="text-align:left; padding:24px;">
+          <div style="font-size:1.8rem; margin-bottom:10px;">📤</div>
+          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-3);">Stage 5</div>
+          <div style="font-weight:600; margin-bottom:6px;">Export</div>
+          <div style="font-size:0.82rem; color:var(--text-muted);">XLSX with =SUM() formulas, PDF report, flat CSV — all from the same data model.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div><!-- /#app -->
+
+<!-- Chart.js 4.x (CDN, no build step needed) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+<!-- JS modules (ES modules) -->
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
