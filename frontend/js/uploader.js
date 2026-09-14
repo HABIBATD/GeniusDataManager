@@ -9,7 +9,7 @@
  *   - Expose: initUploader(onResult, onError, onProgress)
  */
 
-const MAX_SIZE_MB  = 100;
+const MAX_SIZE_MB  = 2048; // 2 GB
 
 export function initUploader({ onResult, onError, onProgress }) {
   const zone      = document.getElementById('upload-zone');

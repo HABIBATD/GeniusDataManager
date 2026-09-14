@@ -73,8 +73,8 @@ app.add_middleware(
 # In-memory task store (Phase A: simple dict; Phase B: replace with Redis/DB)
 _task_store: dict[str, PipelineResult] = {}
 
-# Maximum upload size: 100 MB
-MAX_UPLOAD_BYTES = 100 * 1024 * 1024
+# Maximum upload size: 2048 MB (2 GB)
+MAX_UPLOAD_BYTES = 2048 * 1024 * 1024
 
 ALLOWED_EXTENSIONS = {".pdf", ".csv", ".xlsx", ".xls"}
 ALLOWED_CONTENT_TYPES = {
