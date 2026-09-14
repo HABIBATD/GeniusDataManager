@@ -1,22 +1,22 @@
 /**
- * chart_factory.js — Chart.js wrapper for GeniusDataManager Stage 4
+ * chart_factory.js — Dynamic Chart.js wrapper for GeniusDataManager
  *
- * Builds Chart.js chart instances from a ChartSpec + PipelineResult.
- * Relies on Chart.js 4.x loaded globally via CDN.
- *
- * Exports:
- *   buildChart(spec, pipelineResult) → HTMLCanvasElement | null
+ * Supports:
+ *   - Line & Area Charts
+ *   - Vertical & Horizontal Bar Charts
+ *   - Doughnut & Pie Charts
+ *   - Interactive in-card chart type switching
  */
 
 // ── Shared palette ────────────────────────────────────────────────────────────
 const PALETTE = [
-  'rgba(124,  58, 237, 0.85)',  // purple
-  'rgba( 59, 130, 246, 0.85)',  // blue
-  'rgba( 16, 185, 129, 0.85)',  // green
+  'rgba(99,  102, 241, 0.85)',  // indigo
+  'rgba(139,  92, 246, 0.85)',  // violet
+  'rgba(  6, 182, 212, 0.85)',  // cyan
+  'rgba( 16, 185, 129, 0.85)',  // emerald
   'rgba(245, 158,  11, 0.85)',  // amber
   'rgba(239,  68,  68, 0.85)',  // red
   'rgba(236,  72, 153, 0.85)',  // pink
-  'rgba( 20, 184, 166, 0.85)',  // teal
   'rgba(249, 115,  22, 0.85)',  // orange
 ];
 const PALETTE_BORDER = PALETTE.map(c => c.replace('0.85', '1'));
@@ -24,45 +24,45 @@ const PALETTE_BORDER = PALETTE.map(c => c.replace('0.85', '1'));
 const CHART_DEFAULTS = {
   responsive: true,
   maintainAspectRatio: true,
-  animation: { duration: 600, easing: 'easeOutQuart' },
+  animation: { duration: 500, easing: 'easeOutQuart' },
   plugins: {
     legend: {
       labels: {
-        color: '#A1A1AA',
+        color: '#94A3B8',
         font: { family: "'Inter', sans-serif", size: 11 },
-        padding: 16,
+        padding: 14,
         boxWidth: 12,
         boxHeight: 12,
       },
     },
     tooltip: {
-      backgroundColor: '#1A1A2E',
-      borderColor: '#27272A',
+      backgroundColor: '#111420',
+      borderColor: 'rgba(99, 102, 241, 0.25)',
       borderWidth: 1,
       titleColor: '#FFFFFF',
-      bodyColor: '#A1A1AA',
+      bodyColor: '#94A3B8',
       padding: 12,
       callbacks: {
         label: ctx => {
-          const v = ctx.parsed?.y ?? ctx.parsed;
+          const v = ctx.parsed?.y ?? ctx.parsed?.x ?? ctx.parsed;
           if (typeof v === 'number')
-            return ` ${ctx.dataset.label || ''}: ${v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
-          return ` ${ctx.dataset.label}: ${v}`;
+            return ` ${ctx.dataset.label || ctx.label || ''}: ${v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+          return ` ${ctx.dataset.label || ctx.label || ''}: ${v}`;
         },
       },
     },
   },
   scales: {
     x: {
-      grid: { color: 'rgba(255,255,255,0.05)' },
-      ticks: { color: '#71717A', font: { size: 10 } },
+      grid: { color: 'rgba(255,255,255,0.04)' },
+      ticks: { color: '#64748B', font: { size: 10 } },
     },
     y: {
-      grid: { color: 'rgba(255,255,255,0.05)' },
+      grid: { color: 'rgba(255,255,255,0.04)' },
       ticks: {
-        color: '#71717A',
+        color: '#64748B',
         font: { size: 10 },
-        callback: v => v.toLocaleString(),
+        callback: v => typeof v === 'number' ? v.toLocaleString() : v,
       },
     },
   },
@@ -70,10 +70,7 @@ const CHART_DEFAULTS = {
 
 
 /**
- * Build a Chart.js chart from a ChartSpec.
- * @param {object} spec - ChartSpec from the LayoutPlan
- * @param {object} result - PipelineResult from the upload endpoint
- * @returns {HTMLElement|null}  A <div class="chart-canvas-wrap"> containing the canvas
+ * Build a Chart.js chart container with an interactive chart-type switcher.
  */
 export function buildChart(spec, result) {
   if (!result.stage1 || !result.stage2) return null;
@@ -85,6 +82,23 @@ export function buildChart(spec, result) {
   const { labels, datasets } = _extractData(spec, rawTable, tp);
   if (!labels.length || !datasets.length) return null;
 
+  const container = document.createElement('div');
+  container.className = 'chart-container-inner';
+
+  // ── Chart Type Switcher Toolbar ──
+  const toolbar = document.createElement('div');
+  toolbar.className = 'chart-toolbar';
+
+  const types = [
+    { id: 'bar', label: '📊 Bar' },
+    { id: 'line', label: '📈 Line' },
+    { id: 'area', label: '📉 Area' },
+    { id: 'doughnut', label: '🍩 Donut' },
+  ];
+
+  let currentType = spec.chart_type;
+  if (currentType === 'grouped_bar' || currentType === 'bar_horizontal') currentType = 'bar';
+
   const wrap = document.createElement('div');
   wrap.className = 'chart-canvas-wrap';
 
@@ -92,11 +106,36 @@ export function buildChart(spec, result) {
   canvas.id = `canvas_${spec.chart_id}`;
   wrap.appendChild(canvas);
 
-  const config = _buildConfig(spec.chart_type, labels, datasets);
-  if (!config) return null;
+  let chartInstance = null;
 
-  new Chart(canvas, config);  // eslint-disable-line no-new
-  return wrap;
+  function renderChart(type) {
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+    const config = _buildConfig(type, labels, datasets);
+    if (config) {
+      chartInstance = new Chart(canvas, config);
+    }
+  }
+
+  types.forEach(t => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `btn-chart-type ${t.id === currentType ? 'active' : ''}`;
+    btn.textContent = t.label;
+    btn.addEventListener('click', () => {
+      toolbar.querySelectorAll('.btn-chart-type').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChart(t.id);
+    });
+    toolbar.appendChild(btn);
+  });
+
+  container.appendChild(toolbar);
+  container.appendChild(wrap);
+
+  renderChart(currentType);
+  return container;
 }
 
 
@@ -107,7 +146,6 @@ function _extractData(spec, rawTable, tp) {
   const rows = rawTable.rows;
   const roles = tp.row_roles || rows.map(() => 'detail');
 
-  // Filter rows by spec.row_filter
   const filteredPairs = rows
     .map((r, i) => [r, roles[i]])
     .filter(([, role]) => {
@@ -124,18 +162,13 @@ function _extractData(spec, rawTable, tp) {
 
 
 function _extractTimeSeriesData(spec, headers, filteredPairs) {
-  // For time series: x = category column labels (row descriptions), y = time period columns
   const xColIdx = spec.x_col ? headers.indexOf(spec.x_col) : 0;
-  const yCols = spec.y_cols;  // these are the time-period column headers
-
-  // Labels = time period headers (columns), datasets = one per category row
+  const yCols = spec.y_cols;
   const yColIndices = yCols.map(h => headers.indexOf(h)).filter(i => i >= 0);
 
   if (!yColIndices.length) return { labels: [], datasets: [] };
 
   const labels = yColIndices.map(i => headers[i]);
-
-  // One dataset per row (up to 8 for readability)
   const maxSeries = 8;
   const datasets = filteredPairs.slice(0, maxSeries).map(([row], si) => {
     const label = xColIdx >= 0 && xColIdx < row.cells.length
@@ -154,8 +187,8 @@ function _extractTimeSeriesData(spec, headers, filteredPairs) {
       data,
       borderColor: PALETTE_BORDER[si % PALETTE.length],
       backgroundColor: color,
-      tension: 0.4,
-      pointRadius: 4,
+      tension: 0.35,
+      pointRadius: 3,
       pointHoverRadius: 6,
       fill: false,
       borderWidth: 2,
@@ -173,7 +206,6 @@ function _extractCategoryData(spec, headers, filteredPairs) {
 
   if (!yColIndices.length || !filteredPairs.length) return { labels: [], datasets: [] };
 
-  // Labels = x column values (row categories, up to 24)
   const maxRows = 24;
   const pairs = filteredPairs.slice(0, maxRows);
   const labels = pairs.map(([row]) => {
@@ -182,7 +214,6 @@ function _extractCategoryData(spec, headers, filteredPairs) {
     return `Row ${row.row_index}`;
   });
 
-  // One dataset per y column
   const datasets = yColIndices.map((ci, si) => {
     const data = pairs.map(([row]) => {
       if (ci >= row.cells.length) return null;
@@ -196,7 +227,7 @@ function _extractCategoryData(spec, headers, filteredPairs) {
       backgroundColor: color,
       borderColor: PALETTE_BORDER[si % PALETTE.length],
       borderWidth: 1,
-      borderRadius: 4,
+      borderRadius: 5,
     };
   });
 
@@ -207,29 +238,63 @@ function _extractCategoryData(spec, headers, filteredPairs) {
 // ── Chart.js config builders ─────────────────────────────────────────────────
 
 function _buildConfig(chartType, labels, datasets) {
-  const base = JSON.parse(JSON.stringify(CHART_DEFAULTS));  // deep clone
+  const base = JSON.parse(JSON.stringify(CHART_DEFAULTS));
+
+  // Deep clone datasets so mutations don't bleed between types
+  const clonedDatasets = datasets.map(d => ({ ...d }));
 
   switch (chartType) {
     case 'line':
+      clonedDatasets.forEach(d => {
+        d.fill = false;
+        d.tension = 0.35;
+        d.pointRadius = 4;
+        d.borderWidth = 2;
+      });
+      return { type: 'line', data: { labels, datasets: clonedDatasets }, options: base };
+
     case 'area':
-      if (chartType === 'area' && datasets[0]) {
-        datasets[0].fill = true;
-        datasets[0].backgroundColor = datasets[0].backgroundColor?.replace('0.85', '0.15') ?? 'rgba(124,58,237,0.15)';
-      }
-      return { type: 'line', data: { labels, datasets }, options: base };
+      clonedDatasets.forEach((d, i) => {
+        d.fill = true;
+        d.tension = 0.35;
+        d.backgroundColor = PALETTE[i % PALETTE.length].replace('0.85', '0.2');
+        d.borderColor = PALETTE_BORDER[i % PALETTE.length];
+        d.borderWidth = 2;
+      });
+      return { type: 'line', data: { labels, datasets: clonedDatasets }, options: base };
 
     case 'bar_horizontal':
       base.indexAxis = 'y';
-      base.scales = {
-        x: { ...base.scales.x, ticks: { ...base.scales.x.ticks, callback: v => v.toLocaleString() } },
-        y: { ...base.scales.y, ticks: { ...base.scales.y.ticks } },
-      };
-      return { type: 'bar', data: { labels, datasets }, options: base };
+      return { type: 'bar', data: { labels, datasets: clonedDatasets }, options: base };
 
+    case 'bar':
     case 'grouped_bar':
-      return { type: 'bar', data: { labels, datasets }, options: base };
+      return { type: 'bar', data: { labels, datasets: clonedDatasets }, options: base };
+
+    case 'doughnut':
+    case 'pie': {
+      // For doughnut/pie, use the first metric series across all categories
+      const firstSeries = clonedDatasets[0] || { data: [] };
+      const sliceColors = labels.map((_, i) => PALETTE[i % PALETTE.length]);
+      const donutData = {
+        labels,
+        datasets: [{
+          label: firstSeries.label || 'Value',
+          data: firstSeries.data,
+          backgroundColor: sliceColors,
+          borderColor: '#111420',
+          borderWidth: 2,
+        }],
+      };
+      const donutOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: base.plugins,
+      };
+      return { type: chartType, data: donutData, options: donutOptions };
+    }
 
     default:
-      return null;
+      return { type: 'bar', data: { labels, datasets: clonedDatasets }, options: base };
   }
 }

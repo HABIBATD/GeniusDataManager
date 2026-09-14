@@ -9,7 +9,6 @@
  *   - Expose: initUploader(onResult, onError, onProgress)
  */
 
-const ALLOWED_EXTS = ['.pdf', '.csv', '.xlsx', '.xls'];
 const MAX_SIZE_MB  = 100;
 
 export function initUploader({ onResult, onError, onProgress }) {
@@ -50,13 +49,7 @@ export function initUploader({ onResult, onError, onProgress }) {
   async function handleFile(file) {
     const ext = '.' + file.name.split('.').pop().toLowerCase();
 
-    // Client-side type check
-    if (!ALLOWED_EXTS.includes(ext)) {
-      showBanner('error', `❌ Unsupported file type "${ext}". Please upload a PDF, CSV, or XLSX file.`);
-      return;
-    }
-
-    // Client-side size check
+    // Accept any file up to MAX_SIZE_MB
     if (file.size > MAX_SIZE_MB * 1024 * 1024) {
       showBanner('error', `❌ File too large (${(file.size/1048576).toFixed(1)} MB). Maximum is ${MAX_SIZE_MB} MB.`);
       return;

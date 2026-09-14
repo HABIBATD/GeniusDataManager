@@ -44,14 +44,13 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from models.intermediate import LayoutPlan, PipelineResult, Stage1Result, Stage2Result
-from stage1_extraction.pdf_extractor import extract_pdf
-from stage1_extraction.csv_extractor import extract_csv
-from stage1_extraction.xlsx_extractor import extract_xlsx
+from stage1_extraction.universal_extractor import extract_universal
 from stage2_profiling.profiler import profile_stage1_result
 from stage3_layout.layout_planner import plan_layout
 from stage5_export.xlsx_exporter import export_xlsx
 from stage5_export.pdf_exporter import export_pdf
 from stage5_export.csv_exporter import export_csv
+from stage5_export.json_exporter import export_json
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(name)s | %(message)s")
 logger = logging.getLogger("genius")
@@ -107,12 +106,6 @@ async def upload_file(file: UploadFile = File(...)):
 
     # --- Validation ---
     filename = file.filename or "unknown"
-    ext = Path(filename).suffix.lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported file type '{ext}'. Allowed: {', '.join(ALLOWED_EXTENSIONS)}",
-        )
 
     file_bytes = await file.read()
     if len(file_bytes) > MAX_UPLOAD_BYTES:
@@ -125,16 +118,9 @@ async def upload_file(file: UploadFile = File(...)):
 
     logger.info("Processing file: %s (%d bytes)", filename, len(file_bytes))
 
-    # --- Stage 1: Extraction ---
+    # --- Stage 1: Universal Extraction ---
     try:
-        if ext == ".pdf":
-            stage1: Stage1Result = extract_pdf(file_bytes, filename)
-        elif ext == ".csv":
-            stage1 = extract_csv(file_bytes, filename)
-        elif ext in (".xlsx", ".xls"):
-            stage1 = extract_xlsx(file_bytes, filename)
-        else:
-            raise ValueError(f"Unhandled extension: {ext}")
+        stage1: Stage1Result = extract_universal(file_bytes, filename)
     except Exception as exc:
         logger.exception("Stage 1 extraction failed for %s", filename)
         result = PipelineResult(
@@ -249,18 +235,18 @@ async def get_layout(request: Request):
 # Stage 5 — Export
 # ---------------------------------------------------------------------------
 
-_EXPORT_FORMATS = {"xlsx", "pdf", "csv"}
+_EXPORT_FORMATS = {"xlsx", "pdf", "csv", "json"}
 
 @app.get("/export/{task_id}/{fmt}")
 async def export_file(task_id: str, fmt: str):
     """
-    Stage 5: Export the pipeline result as XLSX, PDF, or CSV.
+    Stage 5: Export the pipeline result as XLSX, PDF, CSV, or JSON.
     Streams the file as a download attachment.
     """
     if fmt not in _EXPORT_FORMATS:
         raise HTTPException(
             status_code=400,
-            detail=f"Unknown format '{fmt}'. Supported: xlsx, pdf, csv.",
+            detail=f"Unknown format '{fmt}'. Supported: xlsx, pdf, csv, json.",
         )
     result = _task_store.get(task_id)
     if not result:
@@ -277,6 +263,10 @@ async def export_file(task_id: str, fmt: str):
             data = export_pdf(result)
             media_type = "application/pdf"
             filename = f"{safe_name}_genius_report.pdf"
+        elif fmt == "json":
+            data = export_json(result)
+            media_type = "application/json; charset=utf-8"
+            filename = f"{safe_name}_genius_data.json"
         else:  # csv
             data = export_csv(result)
             media_type = "text/csv; charset=utf-8"

@@ -28,6 +28,7 @@ export function buildExportBar(taskId) {
     { fmt: 'xlsx', icon: '📊', label: 'XLSX', cls: 'xlsx', title: 'Download as Excel workbook (.xlsx) — includes =SUM() formulas for computed columns' },
     { fmt: 'pdf',  icon: '📄', label: 'PDF',  cls: 'pdf',  title: 'Download as PDF report' },
     { fmt: 'csv',  icon: '📋', label: 'CSV',  cls: 'csv',  title: 'Download as flat CSV (detail rows only)' },
+    { fmt: 'json', icon: '📦', label: 'JSON', cls: 'json', title: 'Download structured JSON with complete composition model' },
   ];
 
   formats.forEach(({ fmt, icon, label: btnLabel, cls, title }) => {

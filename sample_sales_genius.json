@@ -1,0 +1,9 @@
+[
+  {"region": "North America", "product": "Enterprise Cloud", "quarter": "Q1 2026", "revenue": 145000, "units": 45, "growth_pct": 18.5, "status": "Active"},
+  {"region": "North America", "product": "AI Analytics Suite", "quarter": "Q1 2026", "revenue": 210000, "units": 70, "growth_pct": 24.2, "status": "Active"},
+  {"region": "Europe", "product": "Enterprise Cloud", "quarter": "Q1 2026", "revenue": 98000, "units": 32, "growth_pct": 12.0, "status": "Active"},
+  {"region": "Europe", "product": "AI Analytics Suite", "quarter": "Q1 2026", "revenue": 165000, "units": 55, "growth_pct": 29.8, "status": "Active"},
+  {"region": "Asia-Pacific", "product": "Enterprise Cloud", "quarter": "Q1 2026", "revenue": 125000, "units": 40, "growth_pct": 21.4, "status": "Active"},
+  {"region": "Asia-Pacific", "product": "AI Analytics Suite", "quarter": "Q1 2026", "revenue": 180000, "units": 60, "growth_pct": 35.1, "status": "Active"},
+  {"region": "Latin America", "product": "Security Gateway", "quarter": "Q1 2026", "revenue": 54000, "units": 22, "growth_pct": 8.5, "status": "Review"}
+]

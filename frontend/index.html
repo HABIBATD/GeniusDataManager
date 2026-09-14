@@ -25,7 +25,7 @@
         <div class="logo-icon">🧠</div>
         <span class="logo-text">Genius<span>Data</span>Manager</span>
       </a>
-      <span class="header-badge">Phase B — Intelligent Dashboard</span>
+      <span class="header-badge">✨ Universal Genius Edition — Any File Format</span>
     </div>
   </header>
 
@@ -36,16 +36,15 @@
     <div class="container">
       <div class="hero-eyebrow">
         <span>✨</span>
-        5-Stage Intelligent Data Pipeline
+        Universal Multi-Format Data Intelligence &amp; Composition Engine
       </div>
       <h1>
-        <span class="text-gradient">Understand Any File,</span><br>
+        <span class="text-gradient">Understand &amp; Compose Any File,</span><br>
         Automatically.
       </h1>
       <p>
-        Upload a PDF, CSV, or XLSX and get a complete data profile in seconds —
-        column types, hierarchy detection, time structure, anomalies, and
-        computed column validation. No manual mapping. No fixed templates.
+        Upload <b>ANY</b> file format — CSV, Excel, PDF, JSON, Word, SQLite, XML, Logs, Text, PPTX, Images, or ZIP archives.
+        The system automatically extracts all columns, infers semantic types, and composes all data into interactive intelligence.
       </p>
     </div>
   </section>
@@ -56,22 +55,31 @@
   <section id="upload-section">
     <div class="container">
 
-      <!-- File input (hidden) -->
-      <input type="file" id="file-input" accept=".pdf,.csv,.xlsx,.xls" aria-label="Choose a file to upload" />
+      <!-- File input (accepts any file) -->
+      <input type="file" id="file-input" accept="*/*" aria-label="Choose any file to upload" />
 
       <!-- Upload zone -->
       <div class="upload-zone" id="upload-zone" role="button" tabindex="0"
-           aria-label="Drag and drop a file here or click to browse"
+           aria-label="Drag and drop any file here or click to browse"
            onkeydown="if(event.key==='Enter'||event.key===' ') document.getElementById('file-input').click()">
 
-        <span class="upload-icon" aria-hidden="true">📊</span>
-        <h3>Drag &amp; drop your file here</h3>
-        <p>PDF, CSV, or Excel — any schema, any layout.</p>
+        <span class="upload-icon" aria-hidden="true">🧠</span>
+        <h3>Drag &amp; drop ANY file here</h3>
+        <p>Spreadsheets, PDFs, JSON, Word, SQLite databases, Logs, Text, Markup, Images, or Archives.</p>
 
         <div class="upload-pills" aria-label="Supported file types">
-          <span class="pill pill-pdf">PDF</span>
-          <span class="pill pill-csv">CSV</span>
+          <span class="pill pill-json">JSON / JSONL</span>
+          <span class="pill pill-csv">CSV / TSV</span>
           <span class="pill pill-xlsx">XLSX / XLS</span>
+          <span class="pill pill-pdf">PDF</span>
+          <span class="pill pill-docx">Word (.docx)</span>
+          <span class="pill pill-sqlite">SQLite (.db)</span>
+          <span class="pill pill-xml">XML / HTML</span>
+          <span class="pill pill-log">Logs / Text</span>
+          <span class="pill pill-pptx">PPTX</span>
+          <span class="pill pill-ocr">Images (OCR)</span>
+          <span class="pill pill-zip">ZIP Archive</span>
+          <span class="pill pill-any">✨ Any Format</span>
         </div>
 
         <button class="btn-upload" id="browse-btn" type="button"

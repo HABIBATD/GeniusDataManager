@@ -40,6 +40,7 @@ from stage2_profiling.type_inferrer import infer_column_type
 from stage2_profiling.hierarchy_detector import assign_row_roles, has_hierarchy
 from stage2_profiling.time_detector import detect_time_structure
 from stage2_profiling.anomaly_detector import detect_anomalies
+from stage2_profiling.composer import compose_dataset
 
 # Pattern for computed column header detection
 _COMPUTED_HEADER_PATTERN = re.compile(
@@ -95,6 +96,8 @@ def profile_stage1_result(s1: Stage1Result) -> Stage2Result:
         total_mismatches=total_mismatches,
     )
 
+    composition = compose_dataset(s1, table_profiles)
+
     return Stage2Result(
         table_profiles=table_profiles,
         total_tables=len(table_profiles),
@@ -104,6 +107,7 @@ def profile_stage1_result(s1: Stage1Result) -> Stage2Result:
         total_mismatches=total_mismatches,
         human_summary=summary,
         warnings=warnings,
+        composition=composition,
     )
 
 

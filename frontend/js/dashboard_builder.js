@@ -105,15 +105,22 @@ export async function renderDashboard(pipelineResult) {
     container.appendChild(grid);
   }
 
-  // ── Drilldown tables ─────────────────────────────────────────────────────
-  if (layoutPlan.drilldown_table_indices?.length) {
+  // ── Drilldown tables & Composer ──────────────────────────────────────────
+  if (pipelineResult.stage1?.tables?.length > 0) {
     const dtHead = _el('h2', {
-      style: 'margin: 40px 0 8px; font-size:1.05rem;',
-    }, ['📋 Data Tables']);
+      style: 'margin: 40px 0 8px; font-size:1.15rem;',
+    }, ['📋 Interactive Data Tables & Composer']);
     container.appendChild(dtHead);
 
-    for (const tidx of layoutPlan.drilldown_table_indices) {
-      const dt = buildDrilldownTable(tidx, pipelineResult, { startOpen: false });
+    // If multiple tables, render the Consolidated Master View first!
+    if (pipelineResult.stage1.tables.length > 1) {
+      const composedDt = buildDrilldownTable(0, pipelineResult, { startOpen: true, isComposedView: true });
+      container.appendChild(composedDt);
+    }
+
+    const indices = layoutPlan.drilldown_table_indices?.length ? layoutPlan.drilldown_table_indices : pipelineResult.stage1.tables.map((_, i) => i);
+    for (const tidx of indices) {
+      const dt = buildDrilldownTable(tidx, pipelineResult, { startOpen: pipelineResult.stage1.tables.length === 1 });
       container.appendChild(dt);
     }
   }

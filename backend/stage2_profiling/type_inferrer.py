@@ -104,6 +104,30 @@ def infer_column_type(
     unique_vals = set(str(v).strip().lower() for v in non_null)
     unique_ratio = len(unique_vals) / total
 
+    # --- Rule 0b: Boolean ---
+    bool_count = sum(
+        1 for v in non_null
+        if isinstance(v, bool) or str(v).strip().lower() in ("true", "false", "yes", "no", "t", "f")
+    )
+    if bool_count / total >= 0.85:
+        return (
+            ColumnType.BOOLEAN,
+            bool_count / total,
+            f"{bool_count}/{total} values ({bool_count/total:.0%}) are boolean (true/false/yes/no). Rule: ≥85% → ColumnType.BOOLEAN.",
+        )
+
+    # --- Rule 0c: Complex / JSON ---
+    complex_count = sum(
+        1 for v in non_null
+        if isinstance(v, (dict, list)) or (isinstance(v, str) and v.strip()[:1] in ("{", "[") and v.strip()[-1:] in ("}", "]"))
+    )
+    if complex_count / total >= 0.50:
+        return (
+            ColumnType.COMPLEX,
+            complex_count / total,
+            f"{complex_count}/{total} values contain structured JSON/dict/list objects. Rule: ≥50% → ColumnType.COMPLEX.",
+        )
+
     # --- Rule 1: Date ---
     if date_ratio >= 0.60:
         return (

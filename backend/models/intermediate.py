@@ -22,6 +22,19 @@ class ExtractionMethod(str, Enum):
     OCR_UNAVAILABLE   = "ocr_unavailable"
     PANDAS_CSV        = "pandas_csv"
     OPENPYXL_XLSX     = "openpyxl_xlsx"
+    JSON_FLATTEN      = "json_flatten"
+    TEXT_DELIMITED    = "text_delimited"
+    TEXT_LOG          = "text_log"
+    TEXT_MARKDOWN     = "text_markdown"
+    TEXT_KEY_VALUE    = "text_key_value"
+    TEXT_UNSTRUCTURED = "text_unstructured"
+    DOCX_TABLE        = "docx_table"
+    PPTX_TABLE        = "pptx_table"
+    SQLITE_TABLE      = "sqlite_table"
+    XML_HTML_TABLE    = "xml_html_table"
+    ARCHIVE_CONTAINED = "archive_contained"
+    IMAGE_OCR         = "image_ocr"
+    UNIVERSAL_SNIFFER = "universal_sniffer"
 
 
 class RawCell(BaseModel):
@@ -73,6 +86,8 @@ class ColumnType(str, Enum):
     CURRENCY    = "currency"
     PERCENTAGE  = "percentage"
     NUMERIC     = "numeric"
+    BOOLEAN     = "boolean"
+    COMPLEX     = "complex"
     FREE_TEXT   = "free_text"
     TIME_PERIOD = "time_period"   # column header represents a time period
 
@@ -146,6 +161,18 @@ class TableProfile(BaseModel):
     anomalies: list[Anomaly] = Field(default_factory=list)
 
 
+class CompositionSummary(BaseModel):
+    """Genius data composition metrics across all extracted tables."""
+    health_score: float = 100.0          # 0-100 overall data quality score
+    completeness_pct: float = 100.0      # % non-null cells across dataset
+    total_records: int = 0
+    total_features: int = 0
+    executive_insights: list[str] = Field(default_factory=list)
+    unified_columns: list[dict] = Field(default_factory=list)
+    can_unify: bool = False
+    table_relationships: list[dict] = Field(default_factory=list)
+
+
 class Stage2Result(BaseModel):
     """Complete output of Stage 2 profiling."""
     table_profiles: list[TableProfile] = Field(default_factory=list)
@@ -156,6 +183,7 @@ class Stage2Result(BaseModel):
     total_mismatches: int = 0
     human_summary: str = ""             # The short human-readable summary shown in the UI
     warnings: list[str] = Field(default_factory=list)
+    composition: Optional[CompositionSummary] = None
 
 
 # ---------------------------------------------------------------------------
