@@ -11,7 +11,7 @@ from typing import Dict, Optional, Tuple
 import pandas as pd
 
 from database import Base, SessionLocal, engine
-from db_models import AnalysisResultModel, DataFrameModel, RawFileModel
+from db_models import AnalysisResultModel, DataFrameModel, RawFileModel, UploadedFile
 from models.schemas import AnalysisResult
 
 logger = logging.getLogger("genius.storage")
@@ -69,6 +69,12 @@ class SQLiteStorage(StorageBackend):
                 sheet_names_json=sheets_json,
             )
             db.merge(record)
+
+            uploaded_file = UploadedFile(
+                id=file_id,
+                filename=filename,
+            )
+            db.merge(uploaded_file)
             db.commit()
         except Exception as exc:
             db.rollback()
