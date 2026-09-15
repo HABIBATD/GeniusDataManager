@@ -1,0 +1,20 @@
+Order Date,Product,Qty,Unit Price,Region
+2026-01-05,Laptop Pro,5,$1200.00,West
+2026-01-12,Wireless Mouse,25,$25.50,West
+2026-01-18,Monitor 4K,8,$350.00,East
+2026-01-24,USB-C Hub,15,$45.00,West
+2026-02-02,Laptop Pro,7,$1200.00,West
+2026-02-08,Mechanical Keyboard,12,$85.00,Central
+2026-02-14,Wireless Mouse,30,$25.50,West
+2026-02-20,Monitor 4K,10,$350.00,West
+2026-02-27,USB-C Hub,20,$45.00,South
+2026-03-04,Laptop Pro,9,$1200.00,West
+2026-03-11,Wireless Mouse,40,$25.50,West
+2026-03-15,Monitor 4K,14,$350.00,West
+2026-03-22,USB-C Hub,25,$45.00,West
+2026-03-28,Mechanical Keyboard,18,$85.00,West
+2026-04-03,Laptop Pro,11,$1200.00,West
+2026-04-10,Wireless Mouse,45,$25.50,East
+2026-04-16,Monitor 4K,12,$350.00,Central
+2026-04-22,USB-C Hub,30,$45.00,West
+2026-04-29,Mechanical Keyboard,22,$85.00,West

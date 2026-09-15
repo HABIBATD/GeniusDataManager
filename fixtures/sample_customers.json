@@ -1,0 +1,9 @@
+[
+  {"customer_id": "CUST-1001", "name": "Acme Corp", "signup_date": "2025-03-15", "plan": "Enterprise", "mrr": 4500.0, "seats": 120, "country": "USA", "churn_risk": "Low"},
+  {"customer_id": "CUST-1002", "name": "Starlight AI", "signup_date": "2025-06-20", "plan": "Growth", "mrr": 1800.0, "seats": 45, "country": "Canada", "churn_risk": "Medium"},
+  {"customer_id": "CUST-1003", "name": "Nexus Dynamics", "signup_date": "2025-08-10", "plan": "Enterprise", "mrr": 5200.0, "seats": 150, "country": "UK", "churn_risk": "Low"},
+  {"customer_id": "CUST-1004", "name": "HyperScale Labs", "signup_date": "2025-09-01", "plan": "Starter", "mrr": 450.0, "seats": 10, "country": "Germany", "churn_risk": "High"},
+  {"customer_id": "CUST-1005", "name": "Vortex Media", "signup_date": "2025-11-12", "plan": "Growth", "mrr": 2100.0, "seats": 60, "country": "USA", "churn_risk": "Low"},
+  {"customer_id": "CUST-1006", "name": "Zenith Cloud", "signup_date": "2026-01-05", "plan": "Enterprise", "mrr": 6800.0, "seats": 220, "country": "France", "churn_risk": "Low"},
+  {"customer_id": "CUST-1007", "name": "OmniRetail Group", "signup_date": "2026-02-18", "plan": "Growth", "mrr": 1950.0, "seats": 50, "country": "Japan", "churn_risk": "Medium"}
+]
