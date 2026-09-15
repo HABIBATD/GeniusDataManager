@@ -10,14 +10,18 @@ ENV/
 .venv/
 .pytest_cache/
 
-# Databases and SQLite runtime storage
+# Databases and runtime data storage
 *.db
 *.db-journal
 *.sqlite
 *.sqlite3
-backend/data/geniusdata.db
-backend/data/*.db
-data/*.db
+backend/data/
+data/
+
+# Temporary / Backup files
+*.bak
+*.swp
+*.swo
 
 # Frontend / Node
 node_modules/
@@ -28,7 +32,5 @@ build/
 # IDE & OS
 .vscode/
 .idea/
-*.swp
-*.swo
 .DS_Store
 Thumbs.db

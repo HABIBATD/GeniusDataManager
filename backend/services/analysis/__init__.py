@@ -1,31 +1,28 @@
 """
 Analysis package initialization.
-Registers all built-in analysis strategies with the strategy registry.
+Re-exports from Stage 4 analysis engine for backward compatibility.
 """
-from services.analysis.base import (
+from stage4_analysis import (
+    AnalysisValidationError,
     BaseAnalysis,
+    ComparisonAnalysis,
+    OutlierDetectionAnalysis,
+    SalesAnalysis,
+    SummaryStatsAnalysis,
+    TrendAnalysis,
+    clear_strategies,
     get_strategy,
     list_strategies,
     register_strategy,
 )
-from services.analysis.sales_analysis import SalesAnalysis
-from services.analysis.trend_analysis import TrendAnalysis
-from services.analysis.comparison import ComparisonAnalysis
-from services.analysis.summary_stats import SummaryStatsAnalysis
-from services.analysis.outlier_detection import OutlierDetectionAnalysis
-
-# Register default strategies
-register_strategy(SalesAnalysis())
-register_strategy(TrendAnalysis())
-register_strategy(ComparisonAnalysis())
-register_strategy(SummaryStatsAnalysis())
-register_strategy(OutlierDetectionAnalysis())
 
 __all__ = [
+    "AnalysisValidationError",
     "BaseAnalysis",
     "register_strategy",
     "get_strategy",
     "list_strategies",
+    "clear_strategies",
     "SalesAnalysis",
     "TrendAnalysis",
     "ComparisonAnalysis",

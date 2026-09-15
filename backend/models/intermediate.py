@@ -213,7 +213,24 @@ class LayoutPlan(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Pipeline envelope — wraps both stage outputs for the API response
+# Stage 4 — Analysis Result primitives
+# ---------------------------------------------------------------------------
+
+class Stage4Result(BaseModel):
+    """Output of Stage 4 Analysis."""
+    result_id: str
+    analysis_type: str
+    summary: str
+    detailed_findings: list[str] = Field(default_factory=list)
+    kpis: list[dict] = Field(default_factory=list)
+    charts: list[dict] = Field(default_factory=list)
+    table_data: Optional[list[dict]] = None
+    table_columns: Optional[list[str]] = None
+    metadata: dict = Field(default_factory=dict)
+
+
+# ---------------------------------------------------------------------------
+# Pipeline envelope — wraps stage outputs for the API response
 # ---------------------------------------------------------------------------
 
 class PipelineResult(BaseModel):
@@ -223,3 +240,5 @@ class PipelineResult(BaseModel):
     error: Optional[str] = None
     stage1: Optional[Stage1Result] = None
     stage2: Optional[Stage2Result] = None
+    stage3: Optional[LayoutPlan] = None
+    stage4: Optional[Stage4Result] = None

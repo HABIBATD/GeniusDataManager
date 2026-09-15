@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Optional, Tuple
 import pandas as pd
 
-from database import Base, SessionLocal, engine
+from db import Base, SessionLocal, engine
 from db_models import AnalysisResultModel, DataFrameModel, RawFileModel, UploadedFile
 from models.schemas import AnalysisResult
 
