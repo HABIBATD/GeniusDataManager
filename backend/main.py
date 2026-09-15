@@ -36,6 +36,9 @@ app = FastAPI(
     version="2.1.0",
 )
 
+# Import DB Base & Engine
+from db import Base, engine
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
@@ -44,6 +47,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables verified/created on startup.")
 
 
 # Global Exception Handlers returning structured { "error": str, "detail": str }
