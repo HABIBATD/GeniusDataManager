@@ -134,7 +134,7 @@ class SQLiteStorage(StorageBackend):
             res_json = result.model_dump_json()
             export_json = export_df.to_json(orient="split", date_format="iso") if export_df is not None else None
             record = AnalysisResultModel(
-                result_id=result_id,
+                id=result_id,
                 analysis_type=result.analysis_type,
                 result_json=res_json,
                 export_dataframe_json=export_json,
@@ -154,9 +154,15 @@ class SQLiteStorage(StorageBackend):
 
         db = SessionLocal()
         try:
-            record = db.query(AnalysisResultModel).filter(AnalysisResultModel.result_id == result_id).first()
+            record = db.query(AnalysisResultModel).filter(AnalysisResultModel.id == result_id).first()
             if record:
-                result = AnalysisResult.model_validate_json(record.result_json)
+                res_data = record.result_json
+                if isinstance(res_data, str):
+                    result = AnalysisResult.model_validate_json(res_data)
+                elif isinstance(res_data, dict):
+                    result = AnalysisResult.model_validate(res_data)
+                else:
+                    result = AnalysisResult.model_validate_json(str(res_data))
                 export_df = pd.read_json(io.StringIO(record.export_dataframe_json), orient="split") if record.export_dataframe_json else None
                 item = (result, export_df)
                 self._analysis_cache[result_id] = item
