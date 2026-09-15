@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GeniusDataManager — Intelligent Data Profiling</title>
-  <meta name="description" content="Upload any PDF, CSV, or XLSX file and let GeniusDataManager automatically extract, profile, and visualize your data — no manual mapping required." />
+  <title>GeniusDataManager — Intelligent Data Profiling & Composition Engine</title>
+  <meta name="description" content="Upload any CSV, Excel, or JSON data file, automatically detect schema & semantics, configure guided alignment, and generate visual insights." />
 
-  <!-- Preconnect for Google Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="/css/styles.css" />
-  <link rel="stylesheet" href="/css/dashboard.css" />
 </head>
 <body>
 <div id="app">
@@ -23,165 +23,320 @@
     <div class="header-inner">
       <a href="/" class="logo" id="logo-link">
         <div class="logo-icon">🧠</div>
-        <span class="logo-text">Genius<span>Data</span>Manager</span>
+        <span>Genius<span>Data</span>Manager</span>
       </a>
-      <span class="header-badge">✨ Universal Genius Edition — Any File Format</span>
+      <span class="header-badge">✨ Guided Schema & Analysis Engine</span>
     </div>
   </header>
 
   <!-- ====================================================
-       HERO
+       MAIN WIZARD CONTAINER
        ==================================================== -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-eyebrow">
-        <span>✨</span>
-        Universal Multi-Format Data Intelligence &amp; Composition Engine
+  <div class="container">
+
+    <!-- Status Banner -->
+    <div id="status-banner" role="alert"></div>
+
+    <!-- Stepper Navigation -->
+    <nav class="stepper-nav" aria-label="Wizard Steps">
+      <div class="step-item active" data-step="1">
+        <div class="step-number">1</div>
+        <div class="step-label">Upload Data</div>
       </div>
-      <h1>
-        <span class="text-gradient">Understand &amp; Compose Any File,</span><br>
-        Automatically.
-      </h1>
-      <p>
-        Upload <b>ANY</b> file format — CSV, Excel, PDF, JSON, Word, SQLite, XML, Logs, Text, PPTX, Images, or ZIP archives.
-        The system automatically extracts all columns, infers semantic types, and composes all data into interactive intelligence.
-      </p>
-    </div>
-  </section>
+      <div class="step-divider"></div>
 
-  <!-- ====================================================
-       UPLOAD SECTION
-       ==================================================== -->
-  <section id="upload-section">
-    <div class="container">
-
-      <!-- File input (accepts any file) -->
-      <input type="file" id="file-input" accept="*/*" aria-label="Choose any file to upload" />
-
-      <!-- Upload zone -->
-      <div class="upload-zone" id="upload-zone" role="button" tabindex="0"
-           aria-label="Drag and drop any file here or click to browse"
-           onkeydown="if(event.key==='Enter'||event.key===' ') document.getElementById('file-input').click()">
-
-        <span class="upload-icon" aria-hidden="true">🧠</span>
-        <h3>Drag &amp; drop ANY file here</h3>
-        <p>Spreadsheets, PDFs, JSON, Word, SQLite databases, Logs, Text, Markup, Images, or Archives.</p>
-
-        <div class="upload-pills" aria-label="Supported file types">
-          <span class="pill pill-json">JSON / JSONL</span>
-          <span class="pill pill-csv">CSV / TSV</span>
-          <span class="pill pill-xlsx">XLSX / XLS</span>
-          <span class="pill pill-pdf">PDF</span>
-          <span class="pill pill-docx">Word (.docx)</span>
-          <span class="pill pill-sqlite">SQLite (.db)</span>
-          <span class="pill pill-xml">XML / HTML</span>
-          <span class="pill pill-log">Logs / Text</span>
-          <span class="pill pill-pptx">PPTX</span>
-          <span class="pill pill-ocr">Images (OCR)</span>
-          <span class="pill pill-zip">ZIP Archive</span>
-          <span class="pill pill-any">✨ Any Format</span>
-        </div>
-
-        <button class="btn-upload" id="browse-btn" type="button"
-                aria-label="Open file browser">
-          <span aria-hidden="true">📁</span> Choose File
-        </button>
-
-        <!-- Progress bar (hidden until upload starts) -->
-        <div class="progress-container" id="upload-progress" aria-live="polite">
-          <div class="progress-label">
-            <span id="prog-label">Uploading…</span>
-          </div>
-          <div class="progress-bar-track">
-            <div class="progress-bar-fill" id="prog-bar-fill" role="progressbar"
-                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-
-      </div><!-- /.upload-zone -->
-
-      <!-- Status banner -->
-      <div class="status-banner" id="status-banner" role="alert" aria-live="assertive"></div>
-
-    </div><!-- /.container -->
-  </section>
-
-  <!-- ====================================================
-       PROFILE RESULTS SECTION
-       (populated by profile_viewer.js after successful upload)
-       ==================================================== -->
-  <section id="profile-section">
-    <div class="container">
-      <!-- Content injected by profile_viewer.js after successful upload -->
-    </div>
-  </section>
-
-  <!-- ====================================================
-       DASHBOARD SECTION
-       (populated by dashboard_builder.js after profile)
-       ==================================================== -->
-  <section id="dashboard-section" aria-label="Interactive Dashboard">
-    <div class="container">
-      <!-- Content injected by dashboard_builder.js -->
-    </div>
-  </section>
-
-  <!-- ====================================================
-       PIPELINE STAGES EXPLAINER (shown before any file uploaded)
-       ==================================================== -->
-  <section id="stages-section" style="padding: 0 24px 80px;">
-    <div class="container">
-      <h2 style="text-align:center; margin-bottom: 8px;">How the Pipeline Works</h2>
-      <p style="text-align:center; color:var(--text-secondary); margin-bottom:40px; font-size:0.9rem;">
-        Five inspectable stages — each produces its own intermediate output you can examine.
-      </p>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
-
-        <div class="kpi-card" style="text-align:left; padding:24px;">
-          <div style="font-size:1.8rem; margin-bottom:10px;">🔍</div>
-          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-1);">Stage 1</div>
-          <div style="font-weight:600; margin-bottom:6px;">Extraction</div>
-          <div style="font-size:0.82rem; color:var(--text-muted);">PDF (native + OCR fallback), CSV, XLSX — with page/line traceability per row.</div>
-        </div>
-
-        <div class="kpi-card" style="text-align:left; padding:24px;">
-          <div style="font-size:1.8rem; margin-bottom:10px;">🧬</div>
-          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-1);">Stage 2</div>
-          <div style="font-weight:600; margin-bottom:6px;">Data Profiling</div>
-          <div style="font-size:0.82rem; color:var(--text-muted);">Column types from values, hierarchy, time periods, anomalies, computed column validation.</div>
-        </div>
-
-        <div class="kpi-card" style="text-align:left; padding:24px;">
-          <div style="font-size:1.8rem; margin-bottom:10px;">🎨</div>
-          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-2);">Stage 3</div>
-          <div style="font-weight:600; margin-bottom:6px;">Layout Design</div>
-          <div style="font-size:0.82rem; color:var(--text-muted);">Rule-based chart &amp; table selection from the profile. No fixed templates.</div>
-        </div>
-
-        <div class="kpi-card" style="text-align:left; padding:24px;">
-          <div style="font-size:1.8rem; margin-bottom:10px;">📈</div>
-          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-2);">Stage 4</div>
-          <div style="font-weight:600; margin-bottom:6px;">Render Dashboard</div>
-          <div style="font-size:0.82rem; color:var(--text-muted);">Live-computed charts, drill-down tables, KPI cards — all from real extracted data.</div>
-        </div>
-
-        <div class="kpi-card" style="text-align:left; padding:24px;">
-          <div style="font-size:1.8rem; margin-bottom:10px;">📤</div>
-          <div style="font-weight:700; margin-bottom:6px; color:var(--accent-3);">Stage 5</div>
-          <div style="font-weight:600; margin-bottom:6px;">Export</div>
-          <div style="font-size:0.82rem; color:var(--text-muted);">XLSX with =SUM() formulas, PDF report, flat CSV — all from the same data model.</div>
-        </div>
-
+      <div class="step-item" data-step="2">
+        <div class="step-number">2</div>
+        <div class="step-label">Review Schema</div>
       </div>
-    </div>
-  </section>
+      <div class="step-divider"></div>
 
+      <div class="step-item" data-step="3">
+        <div class="step-number">3</div>
+        <div class="step-label">Align & Filter</div>
+      </div>
+      <div class="step-divider"></div>
+
+      <div class="step-item" data-step="4">
+        <div class="step-number">4</div>
+        <div class="step-label">Choose Analysis</div>
+      </div>
+      <div class="step-divider"></div>
+
+      <div class="step-item" data-step="5">
+        <div class="step-number">5</div>
+        <div class="step-label">Results & Insights</div>
+      </div>
+    </nav>
+
+    <!-- ====================================================
+         STEP 1: UPLOAD DATA
+         ==================================================== -->
+    <section id="step-1-section" class="wizard-step-section">
+      <div class="glass-card">
+        <h2 class="card-title"><span>📁</span> Upload Your Raw Data File</h2>
+        <p class="card-subtitle">
+          Upload any CSV, Excel (.xlsx, .xls), or JSON file. GeniusDataManager will automatically parse and detect column structure.
+        </p>
+
+        <input type="file" id="file-input" accept=".csv,.xlsx,.xls,.json,.tsv,.jsonl" style="display: none;" />
+
+        <div class="upload-zone" id="upload-zone" role="button" tabindex="0">
+          <span class="upload-icon">🧠</span>
+          <h3 style="font-family:'Outfit',sans-serif; font-size:1.3rem; margin-bottom:8px;">Drag &amp; drop your file here</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem;">or click anywhere to browse files</p>
+
+          <div class="upload-pills">
+            <span class="pill">CSV / TSV</span>
+            <span class="pill">Excel (.xlsx, .xls)</span>
+            <span class="pill">JSON / JSONL</span>
+            <span class="pill">Multi-Sheet Excel</span>
+          </div>
+
+          <button class="btn btn-primary" id="browse-btn" type="button">
+            <span>📁</span> Choose File
+          </button>
+        </div>
+
+        <!-- Sheet Selector (for Multi-sheet Excel) -->
+        <div class="sheet-selector-card hidden" id="sheet-selector-card">
+          <label for="sheet-select" style="font-weight:600; color:var(--text-muted);">Workbook contains multiple sheets. Select sheet to analyze:</label>
+          <select id="sheet-select" class="form-select" style="max-width: 280px;"></select>
+        </div>
+
+        <!-- Presets -->
+        <div class="preset-container">
+          <div style="text-align:center; font-size:0.85rem; color:var(--text-muted); font-weight:600;">
+            Or test instantly with a built-in demo dataset:
+          </div>
+          <div class="preset-buttons">
+            <button class="btn btn-secondary btn-sm" id="btn-preset-sales" type="button">
+              <span>⚡</span> Sales Analysis (CSV)
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-preset-excel" type="button">
+              <span>⚡</span> Quarterly Performance (Excel Multi-Sheet)
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-preset-json" type="button">
+              <span>⚡</span> SaaS Customers (JSON)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         STEP 2: REVIEW SCHEMA
+         ==================================================== -->
+    <section id="step-2-section" class="wizard-step-section hidden">
+      <div class="glass-card">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="card-title"><span>🔍</span> Detected Schema &amp; Semantic Labels</h2>
+            <p class="card-subtitle">
+              Review inferred technical types, statistical completeness, and semantic tags for file
+              <b id="meta-file-name" style="color:var(--accent-cyan)">-</b>.
+            </p>
+          </div>
+          <div class="flex gap-4">
+            <span class="pill" style="font-size:0.9rem; padding:6px 14px;">Total Rows: <b id="meta-row-count">0</b></span>
+            <span class="pill" style="font-size:0.9rem; padding:6px 14px;">Total Columns: <b id="meta-col-count">0</b></span>
+          </div>
+        </div>
+
+        <!-- Schema Table Container -->
+        <div class="table-container" id="schema-table-container"></div>
+
+        <div class="flex justify-between items-center mt-4" style="margin-top: 28px;">
+          <button class="btn btn-secondary" onclick="document.querySelector('.step-item[data-step=\'1\']').click()">
+            <span>←</span> Back to Upload
+          </button>
+          <button class="btn btn-primary" id="btn-step2-next">
+            Configure Alignment &amp; Filters <span>→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         STEP 3: ALIGN & FILTER
+         ==================================================== -->
+    <section id="step-3-section" class="wizard-step-section hidden">
+      <div class="glass-card">
+        <h2 class="card-title"><span>🛠️</span> Configure Field Mapping &amp; Row Filters</h2>
+        <p class="card-subtitle">
+          Rename fields, enforce data types, add row filtering rules, and select which columns to align into your target dataset.
+        </p>
+
+        <!-- Column Alignment Grid -->
+        <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; margin-bottom:12px; color:var(--accent-primary);">
+          1. Field Mapping &amp; Type Coercion
+        </h3>
+        <div class="table-container mb-4" id="mapping-rows-container"></div>
+
+        <!-- Filter Rule Builder -->
+        <div style="margin-top:32px;">
+          <div class="flex items-center justify-between mb-4">
+            <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; color:var(--accent-cyan);">
+              2. Row Filter Rules (Combine with AND logic)
+            </h3>
+            <button class="btn btn-secondary btn-sm" id="btn-add-filter" type="button">
+              <span>+</span> Add Filter Rule
+            </button>
+          </div>
+
+          <div id="filter-rules-list"></div>
+        </div>
+
+        <div class="flex justify-between items-center mt-4" style="margin-top: 36px;">
+          <button class="btn btn-secondary" onclick="document.querySelector('.step-item[data-step=\'2\']').click()">
+            <span>←</span> Back to Schema
+          </button>
+          <button class="btn btn-primary" id="btn-step3-next">
+            Apply Alignment &amp; Continue <span>→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         STEP 4: CHOOSE ANALYSIS
+         ==================================================== -->
+    <section id="step-4-section" class="wizard-step-section hidden">
+      <div class="glass-card">
+        <h2 class="card-title"><span>🎯</span> Select Analysis Strategy</h2>
+        <p class="card-subtitle">
+          Choose how you want GeniusDataManager to analyze your aligned dataset.
+        </p>
+
+        <!-- Analysis Strategy Cards -->
+        <div class="analysis-cards-grid">
+          <div class="analysis-card selected" data-analysis="sales_analysis">
+            <div class="analysis-card-icon">📊</div>
+            <div class="analysis-card-title">Sales &amp; Revenue</div>
+            <div class="analysis-card-desc">Totals, average order values, top-N products, MoM growth rates.</div>
+          </div>
+
+          <div class="analysis-card" data-analysis="trend_analysis">
+            <div class="analysis-card-icon">📈</div>
+            <div class="analysis-card-title">Trend &amp; Time Series</div>
+            <div class="analysis-card-desc">Daily/weekly/monthly aggregation with linear trend direction.</div>
+          </div>
+
+          <div class="analysis-card" data-analysis="comparison">
+            <div class="analysis-card-icon">⚖️</div>
+            <div class="analysis-card-title">Segment Comparison</div>
+            <div class="analysis-card-desc">Compare two segments (periods or category vs category).</div>
+          </div>
+
+          <div class="analysis-card" data-analysis="summary_stats">
+            <div class="analysis-card-icon">📉</div>
+            <div class="analysis-card-title">Summary Statistics</div>
+            <div class="analysis-card-desc">Mean, median, quartiles, IQR, frequency distribution.</div>
+          </div>
+
+          <div class="analysis-card" data-analysis="outlier_detection">
+            <div class="analysis-card-icon">🔍</div>
+            <div class="analysis-card-title">Outlier Detection</div>
+            <div class="analysis-card-desc">Tukey's 1.5x IQR or Z-score statistical anomaly flagging.</div>
+          </div>
+        </div>
+
+        <!-- Target Columns Selection -->
+        <div style="background:rgba(30,41,59,0.5); padding:24px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+          <h3 style="font-family:'Outfit',sans-serif; font-size:1.15rem; margin-bottom:16px;">Configure Target Fields</h3>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="analysis-target-col">Primary Metric Column:</label>
+              <select id="analysis-target-col" class="form-select"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="analysis-category-col">Category / Segment Column:</label>
+              <select id="analysis-category-col" class="form-select"></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="analysis-date-col">Date / Time Column (Optional):</label>
+              <select id="analysis-date-col" class="form-select"></select>
+            </div>
+          </div>
+
+          <div class="form-group mt-4" id="comp-type-row">
+            <label class="form-label" for="analysis-comp-type">Comparison Mode:</label>
+            <select id="analysis-comp-type" class="form-select" style="max-width: 300px;">
+              <option value="period_over_period">Period over Period (MoM / YoY)</option>
+              <option value="category_comparison">Category vs Category</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-4" style="margin-top: 32px;">
+          <button class="btn btn-secondary" onclick="document.querySelector('.step-item[data-step=\'3\']').click()">
+            <span>←</span> Back to Alignment
+          </button>
+          <button class="btn btn-primary" id="btn-run-analysis">
+            <span>✨</span> Execute Analysis <span>→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         STEP 5: RESULTS & INSIGHTS
+         ==================================================== -->
+    <section id="step-5-section" class="wizard-step-section hidden">
+      <!-- Summary Box -->
+      <div class="summary-box">
+        <div class="summary-box-title">
+          <span>🧠</span> Executive Plain-Language Summary
+        </div>
+        <div class="summary-box-text" id="summary-text">
+          -
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="kpi-grid" id="kpi-cards-grid"></div>
+
+      <!-- Charts Grid -->
+      <div class="charts-grid" id="charts-grid"></div>
+
+      <!-- Aligned Data Table -->
+      <div class="glass-card">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="card-title"><span>📋</span> Aligned Data Preview &amp; Export</h2>
+          <div class="flex gap-2">
+            <button class="btn btn-secondary btn-sm" id="btn-export-csv" type="button">
+              <span>📥</span> Export CSV
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-export-xlsx" type="button">
+              <span>📊</span> Export Excel (.xlsx)
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-export-json" type="button">
+              <span>📄</span> Export JSON
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container" id="aligned-table-container"></div>
+
+        <div class="flex justify-between items-center mt-4" style="margin-top: 28px;">
+          <button class="btn btn-secondary" id="btn-start-over">
+            <span>🔄</span> Start New Analysis
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.container -->
 </div><!-- /#app -->
 
-<!-- Chart.js 4.x (CDN, no build step needed) -->
+<!-- Chart.js 4.x CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
-<!-- JS modules (ES modules) -->
+<!-- JS ES Modules -->
 <script type="module" src="/js/app.js"></script>
 </body>
 </html>
